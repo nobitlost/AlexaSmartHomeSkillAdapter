@@ -1,0 +1,14 @@
+{
+    "modelId": "HjVoTEcXDMnT" /* AlexaHomeAutomation */,
+    "devices": [
+        "23d8caacc17e10ee" /* rlyeh */
+    ],
+    "agentFile": "AlexaSmartHomeSkill.nut",
+    "deviceFile": false,
+    "stopOnFailure": true,
+    "timeout": 30,
+    "tests": [
+        "*.test.nut",
+        "tests/**/*.test.nut"
+    ]
+}
