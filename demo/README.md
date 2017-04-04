@@ -82,17 +82,17 @@ see the utterances listed with each reference entry in the
 [Smart Home Skill API Reference](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference).
 4. On the **Configuration** page, under the **Endpoint** heading click the checkbox to select the geographical region closest to your target costomers, then copy in the ARN number from the Lambda function you created.
 5. To set up **Account Linking** authortizaion we need to create a security profile.
-  1. Copy the **Redirect URLs** URLs from the Skill configuration page (optional-aws bug?)
-  2. In a new tab open up [**APPS & SERVICES** and then click **Security Profiles**](https://developer.amazon.com/iba-sp/overview.html)
-  3. Fill out the Security Profile Name and Description then click **Save**
-  4. In the **Web Settings** tab and add "Return URLs" with URLs from step i (optional-aws bug?)
-  5. Use `https://amazon.com` for **Allowed Origins** (optional-aws bug?)
-  6. Switch back to the **General** tab and copy **Client Id** and **Client Secret**
-  7. Navigate back to the *Smart Home Skill Configuration* page, **Account Linking** section and fill in:
-    1. **Authorization URL** with `https://www.amazon.com/ap/oa`
-    2. **Client Id** with the **Client Id** from the Security Pofile
-    3. **Access Token URI** with `https://api.amazon.com/auth/o2/token`
-    4. **Client Secret** with **Client Secret** from the Security Pofile
+  * Copy the **Redirect URLs** URLs from the Skill configuration page (optional-aws bug?)
+  * In a new tab open up [**APPS & SERVICES** and then click **Security Profiles**](https://developer.amazon.com/iba-sp/overview.html)
+  * Fill out the Security Profile Name and Description then click **Save**
+  * In the **Web Settings** tab and add "Return URLs" with URLs from step 5-1 (optional-aws bug?)
+  * Use `https://amazon.com` for **Allowed Origins** (optional-aws bug?)
+  * Switch back to the **General** tab and copy **Client Id** and **Client Secret**
+  * Navigate back to the *Smart Home Skill Configuration* page, **Account Linking** section and fill in:
+    * **Authorization URL** with `https://www.amazon.com/ap/oa`
+    * **Client Id** with the **Client Id** from the Security Pofile
+    * **Access Token URI** with `https://api.amazon.com/auth/o2/token`
+    * **Client Secret** with **Client Secret** from the Security Pofile
 6. Press "Next" button and ensure "Configuration" tab is marked as green
 7. Check "Yes" against " Show this skill in the Alexa App" at "Test" tab
 
