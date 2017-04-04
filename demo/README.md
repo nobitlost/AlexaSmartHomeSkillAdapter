@@ -80,7 +80,7 @@ Home Skill API, is predefined so does not need to be specified. For details of t
 see the utterances listed with each reference entry in the
 [Smart Home Skill API Reference](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference).
 4. On the **Configuration** page, under the **Endpoint** heading click the checkbox to select the geographical region closest to your target costomers, then copy in the ARN number from the Lambda function you created.
-5. To set up **Account Linking** authortizaion we need to create a security profile:
+5. To set up **Account Linking** authortizaion we need to create a security profile. The steps below will guide you through the setup. Click [here](https://developer.amazon.com/blogs/post/Tx3CX1ETRZZ2NPC/Alexa-Account-Linking-5-Steps-to-Seamlessly-Link-Your-Alexa-Skill-with-Login-wit) for more information about Alexa Account Linking.
     1. Copy the **Redirect URLs** URLs from the Skill configuration page
     2. In a new tab open up [**APPS & SERVICES** and then click **Login with Amazon**](https://developer.amazon.com/lwa/sp/overview.html)
     3. Click **Create a New Security Profile**
