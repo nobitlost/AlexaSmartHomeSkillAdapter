@@ -43,9 +43,7 @@ For example, you should not use “basic”, “reduced” or “simple” in th
 4. Click **Create a Lambda function**.
 5. On the **Select blueprint page**, type **home** in the filter box. Select the **alexa-smart-home-skill-adapter**.
 6. On the **Configure triggers page**, the **Alexa Smart Home** trigger will already be configured. Add the **Application Id** from the developer portal.
-7. Optionally check **Enable trigger**. This enables the Amazon Alexa service to call your Lambda function.
-It’s recommended that you enable the trigger later, once you have completed your implementation
-and testing in the Lambda portal.
+7. Check **Enable trigger**. This enables the Amazon Alexa service to call your Lambda function. If you would prefer you can enable the trigger later, once you have completed your implementation and testing in the Lambda portal.
 8. Click **Next**.
 9. On **Step 3: Configure function**, enter the following:
     * **Name**: A name for your Lambda function. This name is appears in the AWS console and is also returned by the
@@ -71,6 +69,7 @@ Sample event template, leave the default Hello World. Replace the entire content
 following code [AwsLambda/test.js](../AwsLambda/test.js). When the test runs its status can be checked at:
     * **AWS CloudWatch** -> `/aws/lambda/<lambda name>`
     * **Agent console** in the Electric Imp Web IDE
+18. If you did not do so in step 7 return to the **Triggers** tab and **Enable trigger**
 
 #### Finish Registering Your Skill in the Developer Portal
 
