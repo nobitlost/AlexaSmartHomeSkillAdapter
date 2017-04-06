@@ -156,13 +156,13 @@ The method returns a message string if an error was detected, otherwise `null`. 
 
 This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setlockstateconfirmation) for a [SetLockState](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setlockstaterequest) request.
 
-The method accepts the current lock state. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *setLockState* command, the *state* pararmeter is neither *LOCKED* nor *UNLOCKED*, and transport-related errors.
+The method accepts the current lock state. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *setLockState* command, the *state* parameter is neither *LOCKED* nor *UNLOCKED*, and transport-related errors.
 
 ### sendGetLockStateResponse(*state*)
 
 This method creates and sends a [response](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getlockstateresponse) to a [GetLockState](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getlockstaterequest) query.
 
-The method accepts the current lock state. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *getLockState* command, the *state* pararmeter is neither *LOCKED* nor *UNLOCKED*, and transport-related errors.
+The method accepts the current lock state. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *getLockState* command, the *state* parameter is neither *LOCKED* nor *UNLOCKED*, and transport-related errors.
 
 ### sendSetPercentageConfirm()
 
@@ -186,13 +186,13 @@ The method returns a message string if an error was detected, otherwise `null`. 
 
 This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementtargettemperaturerequest) for an [incrementTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementtargettemperaturerequest) request.
 
-The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *incrementTargetTemperature* command, the *mode* and/or *prevMode* pararmeters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
+The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *incrementTargetTemperature* command, the *mode* and/or *prevMode* parameters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
 
 ### sendDecTempConfirm(*temp, mode, prevTemp, prevMode*)
 
 This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementtargettemperatureconfirmation) for a [decrementTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementtargettemperaturerequest) request.
 
-The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *decrementTargetTemperature* command, the *mode* and/or *prevMode* pararmeters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
+The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *decrementTargetTemperature* command, the *mode* and/or *prevMode* parameters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
 
 ### sendSetTempConfirm(*temp, mode, prevTemp, prevMode*)
 
@@ -201,7 +201,7 @@ This method creates and sends a [confirmation](https://developer.amazon.com/publ
 The method accepts current temperature and temperature mode set by the device, temperature and temperature mode
 before changes were made.
 
-The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *setTargetTemperature* command, the *mode* and/or *prevMode* pararmeters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
+The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *setTargetTemperature* command, the *mode* and/or *prevMode* parameters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
 
 ### sendGetTempResponse(*temperatureMode[, optionalValues]*)
 
@@ -216,7 +216,7 @@ The method accepts a temperature mode, and a table with optional fields:
 | *heatingTargetTemperature* | Indicates the target temperature (setpoint) for heating, in degrees Celsius, when a device has dual setpoints |
 | *friendlyName* | Indicates a device specific name for a temperature mode |
 
-The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *getTargetTemperature* command, the *temperatureMode*  pararmeter is not *AUTO*, *COOL*, *HEAT*, *OFF*, *ECO* or *CUSTOM*, and transport-related errors.
+The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *getTargetTemperature* command, the *temperatureMode*  parameter is not *AUTO*, *COOL*, *HEAT*, *OFF*, *ECO* or *CUSTOM*, and transport-related errors.
 
 ### sendGetTempReadingResponse(*temperature*)
 
