@@ -1,21 +1,20 @@
 # AlexaSmartHomeSkill
 
 The library provides a convenient way to implement the
- [Alexa Smart Home Skill Adapter](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-the-smart-home-skill-api)
- on the agent side.
-It takes care of the JSON verification, data parsing and response formatting.
+ [Alexa Smart Home Skill Adapter](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-the-smart-home-skill-api) within an agent. It takes care of the JSON verification, data parsing and response formatting.
+
 Supported requests are:
 
-- Appliance discovering
+- Appliance discovery
 - Device status query
-- Device control command
+- Device control
 - System health check
 
-## AlexaSmartHomeSkill usage
+## AlexaSmartHomeSkill Class Usage
 
 ### Constructor: AlexaSmartHomeSkill()
 
-The constructor creates the instance of the *AlexaSmartHomeSkill*.
+The constructor takes no parameters.
 
 ```squirrel
 #require "AlexaSmartHomeSkill.class.nut:1.0.0"
@@ -23,31 +22,28 @@ The constructor creates the instance of the *AlexaSmartHomeSkill*.
 mySkill <- AlexaSmartHomeSkill();
 ```
 
-### Instance Methods
+## AlexaSmartHomeSkill Class Methods
 
-#### registerAppliance(_applianceId_, _applianceInfo_, _actionCallback_)
+### registerAppliance(*applianceId, applianceInfo, actionCallback*)
 
-The *registerAppliance* method makes the device accessible through the
-[Alexa Smart Home Skill API](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-the-smart-home-skill-api)
-requests.
+This method makes the device accessible through the [Alexa Smart Home Skill API](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-the-smart-home-skill-api).
 
-*applianceId* specifies the device identifier. It must be unique across all devices of the adapter.
+*applianceId* specifies the device identifier. It must be unique across all devices.
 
-*applianceInfo* is a table with several required
-[properties](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#discoverappliancesresponse).
-It must contain the following keys:
+*applianceInfo* is a table containing a number of required [properties](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#discoverappliancesresponse). It must contain the following keys:
 
 | Key | Description |
-|-----|-------------|
+| --- | --- |
 | *manufacturerName* | The name of the device manufacturer |
 | *modelName* | Device model name |
 | *version* | The vendor-provided version of the device |
 | *friendlyName* | The name used by the customer to identify the device |
 | *friendlyDescription* | A human-readable description of the device |
-| *actions* | An array of actions that the device supports. The library uses the array to verify that incoming requests can be fulfilled and are supported. |
+| *actions* | An array of actions that the device supports. The library uses the array to verify that incoming requests can be fulfilled and are supported |
 | *additionalApplianceDetails* | String name/value pairs that provide additional information |
 
 Supported actions are:
+
  - decrementPercentage
  - decrementTargetTemperature
  - getLockState
@@ -62,9 +58,25 @@ Supported actions are:
  - turnOff
  - turnOn
 
-Please see the design [notes](./README.md#callback-design-notes) on the *actionCallback* for more details.
+The *actionCallback* takes the following parameters:
 
-**Agent code example:**
+| Parameter | Description |
+| --- | --- |
+| *session* | An *AlexaSmartHomeSkill.Session* instance |
+| *applianceId* | The ID of the appliance |
+| *action* | The Smart Home API action |
+| *[parameter]* | Optional request-specific parameter |
+
+The *actionCallback* function is executed when a Smart Home API request is received. The application is supposed to respond to this request by calling a confirm, response or error method on the *AlexaSmartHomeSkill.Session* object passed into the callback. This response can be made asynchronously.
+
+The library checks that appropriate confirm/response function is called in response to the incoming request: the error is returned to the application if an inappropriate function is called. Error reporting functions are also allowed to be used in response to any command.
+
+Exceptions thrown within the *actionCallback* function are handled by the library and so don’t result in an error being sent back to the Alexa service.
+
+*registerAppliance()* returns `null` if the verification succeeds, otherwise it returns an error description.
+
+#### Example
+
 ```squirrel
 local smartToasterInfo = {
     "actions": [
@@ -84,59 +96,25 @@ local smartToasterInfo = {
 // Callback executed upon Alexa request
 local actionCallback = function(session, applianceId, action, params) {
     server.log("Got action " + action + " for " + applianceId);
-    // handle Alexa request here
+    // Handle Alexa request here
 }.bindenv(this);
 
 local alexa = AlexaSmartHomeSkill();
 alexa.registerAppliance("SmartToaster", smartToasterInfo, actionCallback);
 ```
 
-The *registerAppliance* method returns **null** if the arguments verification succeeds, or 
-the error description otherwise.
+### removeAppliance(*applianceId*)
 
-When a **Smart Home API** request is received, the *actionCallback* function is executed.
-The first argument is the newly created [AlexaSmartHomeSkill.Session](alexasmarthomeskill-session-usage) 
-object, then the appliance id, action and the request specific parameters follow.
+The *removeAppliance()* method removes the device from the list of accessible appliances. All further requests to the device with the given *applianceId* will be rejected and an [UnsupportedTargetError](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unsupportedtargeterror) issued.
 
-See [callback design notes](./README.md#callback-design-notes) for more details on the *actionCallback* arguments.
+The method does not return a value. Attempts to remove an appliance that has already been removed are ignored.
 
-#### removeAppliance(applianceId)
+## AlexaSmartHomeSkill.Session Class Usage
 
-The *removeAppliance()* removes the device from accessible appliance list.
-All further request to the device with given *applianceId* will be rejected with
-[UnsupportedTargetError](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unsupportedtargeterror).
+This class is available only through the callback function registered with *registerAppliance()*. You should not instantiate it directly. Its main purpose is to encapsulate session data and to provide a convenient way to send responses.
 
-There is nothing being returned from the method. Attempts to remove an appliance that
-was already removed previously are ignored.
+## AlexaSmartHomeSkill.Session Class Methods
 
-
-### Callback Design Notes
-The *actionCallback* takes the following arguments:
-
-| Parameter | Description |
-|-----------|-------------|
-| *session* | __AlexaSmartHomeSkill.Session__ instance |
-| *applianceId* | The ID of the appliance |
-| *action* | Smart Home API action |
-| *[parameter]* | optional request specific parameter |
-
-Application is supposed to respond to the Alexa service request by calling a ***Confirm**, ***Response**,
-or ***Error** method on the *AlexaSmartHomeSkill.Session* object.
-The response can be made asynchronously.
-
-The library checks that appropriate Confirm/Response function is called in response to the incoming request. 
-The error is returned to the application if not appropriate function is called.
-At the same time any error reporting functions are allowed to be used in response to any command.
-
-Exceptions thrown withing the *actionCallback* function are handled and don't result in an error sent back to the Alexa service.
-
-
-## AlexaSmartHomeSkill.Session Usage
-
-This class is available only as first parameter of action callback. Its main purpose is to encapsulate session related
-data and provide convenient  way for response message sending.
-
-### Instance Methods
 - [getAdditionalDetails](#getadditionaldetails)
 - [sendTurnOnConfirm](#sendturnonconfirm)
 - [sendTurnOffConfirm](#sendturnoffconfirm)
@@ -160,187 +138,133 @@ data and provide convenient  way for response message sending.
 
 #### getAdditionalDetails()
 
-The *getAdditionalDetails()* method returns **additionalApplianceDetails** of the request.
+This method returns the request’s *additionalApplianceDetails* data.
 
-#### sendTurnOnConfirm()
+### sendTurnOnConfirm()
 
-The *sendTurnOnConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#turnonconfirmation) for [TurnOn](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#turnonrequest) request.
+This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#turnonconfirmation) for a [TurnOn](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#turnonrequest) request.
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *TurnOn* command
-- Transport related errors
+The method returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *TurnOn* command, and transport-related errors.
 
-#### sendTurnOffConfirm()
+### sendTurnOffConfirm()
 
-The *sendTurnOffConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#turnoffconfirmation) for [TurnOff](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#turnoffrequest) request.
+This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#turnoffconfirmation) for a [TurnOff](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#turnoffrequest) request.
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *TurnOff* command
-- Transport related errors
+The method returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *TurnOff* command, and transport-related errors.
 
-#### sendSetLockConfirm(_state_)
+### sendSetLockConfirm(*state*)
 
-The *sendSetLockConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setlockstateconfirmation) for [SetLockState](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setlockstaterequest) request.
+This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setlockstateconfirmation) for a [SetLockState](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setlockstaterequest) request.
 
-The method accepts the lock current state.
+The method accepts the current lock state. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *setLockState* command, the *state* pararmeter is neither *LOCKED* nor *UNLOCKED*, and transport-related errors.
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *getLockState* command
-- State parameter is neither **LOCKED** nor **UNLOCKED**
-- Transport related errors
+### sendGetLockStateResponse(*state*)
 
-#### sendGetLockStateResponse(_state_)
+This method creates and sends a [response](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getlockstateresponse) to a [GetLockState](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getlockstaterequest) query.
 
-The *sendGetLockStateResponse()* method creates and sends [response](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getlockstateresponse) for [GetLockState](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getlockstaterequest) query.
+The method accepts the current lock state. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *getLockState* command, the *state* pararmeter is neither *LOCKED* nor *UNLOCKED*, and transport-related errors.
 
-The method accepts the lock current state.
+### sendSetPercentageConfirm()
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *setLockState* command
-- State parameter is neither **LOCKED** nor **UNLOCKED**
-- Transport related errors
+This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setpercentageconfirmation) for a [setPercentage](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setlockstaterequest) request.
 
-#### sendSetPercentageConfirm()
+The method returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *setPercentage* command, and transport-related errors.
 
-The *sendSetPercentageConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setpercentageconfirmation) for [setPercentage](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#setlockstaterequest) request.
+### sendIncPercentageConfirm()
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *setPercentage* command
-- Transport related errors
+The *sendIncPercentageConfirm()* method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementpercentageconfirmation) for an [incrementPercentage](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementpercentagerequest) request.
 
-#### sendIncPercentageConfirm()
+The method returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *incrementPercentage* command, and transport-related errors.
 
-The *sendIncPercentageConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementpercentageconfirmation) for [incrementPercentage](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementpercentagerequest) request.
+### sendDecPercentageConfirm()
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *incrementPercentage* command
-- Transport related errors
+This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementpercentageconfirmation) for a [decrementPercentage](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementpercentagerequest) request.
 
-#### sendDecPercentageConfirm()
+The method returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *decrementPercentage* command, and transport-related errors.
 
-The *sendDecPercentageConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementpercentageconfirmation) for [decrementPercentage](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementpercentagerequest) request.
+### sendIncTempConfirm(*temp, mode, prevTemp, prevMode*)
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *decrementPercentage* command
-- Transport related errors
+This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementtargettemperaturerequest) for an [incrementTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementtargettemperaturerequest) request.
 
-####  sendIncTempConfirm(_temp, mode, prevTemp, prevMode_)
+The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *incrementTargetTemperature* command, the *mode* and/or *prevMode* pararmeters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
 
-The *sendIncTempConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementtargettemperaturerequest) for [incrementTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#incrementtargettemperaturerequest) request.
+### sendDecTempConfirm(*temp, mode, prevTemp, prevMode*)
 
-The method accepts current temperature and temperature mode set by the device,
-temperature and temperature mode before changes were made.
+This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementtargettemperatureconfirmation) for a [decrementTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementtargettemperaturerequest) request.
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *incrementTargetTemperature* command
-- Mode parameters are not from **AUTO**, **COOL**, **HEAT**
-- Transport related errors
+The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *decrementTargetTemperature* command, the *mode* and/or *prevMode* pararmeters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
 
-####  sendDecTempConfirm(_temp, mode, prevTemp, prevMode_)
+### sendSetTempConfirm(*temp, mode, prevTemp, prevMode*)
 
-The *sendDecTempConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementtargettemperatureconfirmation) for [decrementTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#decrementtargettemperaturerequest) request.
-
-The method accepts current temperature and temperature mode set by the device,
-temperature and temperature mode before changes were made.
-
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *decrementTargetTemperature* command
-- Mode parameters are not from **AUTO**, **COOL**, **HEAT**
-- Transport related errors
-
-
-####  sendSetTempConfirm(_temp, mode, prevTemp, prevMode_)
-
-The *sendSetTempConfirm()* method creates and sends [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#settargettemperatureconfirmation) for [decrementTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#settargettemperaturerequest) request.
+This method creates and sends a [confirmation](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#settargettemperatureconfirmation) for a [setTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#settargettemperaturerequest) request.
 
 The method accepts current temperature and temperature mode set by the device, temperature and temperature mode
 before changes were made.
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *setTargetTemperature* command
-- Mode parameters are not from **AUTO**, **COOL**, **HEAT**
-- Transport related errors
+The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *setTargetTemperature* command, the *mode* and/or *prevMode* pararmeters is not *AUTO*, *COOL* or *HEAT*, and transport-related errors.
 
-####  sendGetTempResponse(_temperatureMode, [optionalValues]_)
+### sendGetTempResponse(*temperatureMode[, optionalValues]*)
 
-The* sendGetTempResponse()* method creates and sends [response](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getTargetTemperatureResponse) for [getTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getTargetTemperatureRequest) query.
+This method creates and sends a [response](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getTargetTemperatureResponse) to a [getTargetTemperature](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getTargetTemperatureRequest) query.
 
-The method accepts temperature mode, and a table with optional fields:
+The method accepts a temperature mode, and a table with optional fields:
 
 | Key | Description |
-|-----|-------------|
-| *targetTemperature* | Indicates the target temperature set by the device in single-setpoint mode in degrees Celsius. |
-| *coolingTargetTemperature* | Indicates the target temperature (setpoint) for cooling, in degrees Celcius, when a device has dual setpoints. |
-| *heatingTargetTemperature object* | object 	Indicates the target temperature (setpoint) for heating, in degrees Celcius, when a device has dual setpoints. |
-| *friendlyName* | Indicates a device specific name for a temperature mode. |
+| --- | --- |
+| *targetTemperature* | Indicates the target temperature set by the device in single-setpoint mode in degrees Celsius |
+| *coolingTargetTemperature* | Indicates the target temperature (setpoint) for cooling, in degrees Celsius, when a device has dual setpoints |
+| *heatingTargetTemperature* | Indicates the target temperature (setpoint) for heating, in degrees Celsius, when a device has dual setpoints |
+| *friendlyName* | Indicates a device specific name for a temperature mode |
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *getTargetTemperature* command
-- Mode parameters are not from **AUTO**, **COOL**, **HEAT**, **OFF**, **ECO**, **CUSTOM**
-- Transport related errors
+The method accepts the current temperature and the temperature mode set by the device, and the temperature and temperature mode before the changes were made. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *getTargetTemperature* command, the *temperatureMode*  pararmeter is not *AUTO*, *COOL*, *HEAT*, *OFF*, *ECO* or *CUSTOM*, and transport-related errors.
 
-####  sendGetTempReadingResponse(_temp_)
+### sendGetTempReadingResponse(*temperature*)
 
-The *sendGetTempReadingResponse()* method creates and sends [response](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getTemperatureReadingRequest) for [getTemperatureReading](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getTemperatureReadingRequest) query.
+This method creates and sends a [response](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getTemperatureReadingRequest) to a [getTemperatureReading](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#getTemperatureReadingRequest) query.
 
-The method accepts temperature reading from the device.
+The method accepts a temperature reading from the device. It returns a message string if an error was detected, otherwise `null`. Possible error conditions include: the ongoing session is not related to the *getTemperatureReading* command, and transport-related errors.
 
-The method returns **message string** if error was detected, or **null** otherwise.
-The list of possible error conditions:
-- Ongoing session is not related to *getTemperatureReading* command
-- Transport related errors
+### valueOutOfRangeError(*min, max*)
 
-#### valueOutOfRangeError(_min, max_)
-The *valueOutOfRangeError()* is used for [notification](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#valueoutofrangeerror) about target value is out of its supported range.
+This method is used to [notify](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#valueoutofrangeerror) that the target value is out of the supported range.
 
-It accepts lowest and highest allowed values.
+It accepts lowest and highest allowed values, and returns an error message string if a network problems was detected.
 
-The method returns **message string** if network problem was detected.
+#### unwillingToSetValueError(*code, description*)
 
-#### unwillingToSetValueError(code, descr)
-The *unwillingToSetValueError()* is used for [notification](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unwillingtosetvalueerror) about partner device is rejecting to set requested value.
+This method is used to [notify](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unwillingtosetvalueerror) that a partner device has rejected a requested value.
 
-It accepts error code in string format and custom description.
-
-The method returns **message string** if network problem was detected.
+It accepts an error code in string format and a custom description, and returns an error message string if a network problems was detected.
 
 #### unsupportedTargetSettingError()
-The *unsupportedTargetSettingError()* is used for [notification](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unsupportedtargetsettingerror) about setting is not valid for the device or the operation.
 
-The method returns **message string** if network problem was detected.
+This method is used to [notify](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unsupportedtargetsettingerror) that a setting is not valid for the device or the operation.
 
-#### driverInternalError()
-The *driverInternalError()* is used to be used for [notification](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#driverinternalerror) about general runtime error.
+The method returns an error message string if a network problems was detected.
 
-The method returns **message string** if network problem was detected.
+### driverInternalError()
 
-#### noSuchTargetError()
-The *noSuchTargetError()* is used to be used for [notification](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#nosuchtargeterror) about  target device cannot be found.
+This method is used to [notify](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#driverinternalerror) that a general runtime error has taken place.
 
-The method returns **message string** if network problem was detected.
+The method returns an error message string if a network problems was detected.
+
+### noSuchTargetError()
+
+This method is used to [notify](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#nosuchtargeterror) that the target device cannot be found.
+
+The method returns an error message string if a network problems was detected.
 
 #### unsupportedOperationError()
-The *unsupportedOperationError()* is used for [notification](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unsupportedoperationerror) about  requested operation is not supported on the target device.
 
-The method returns **message string** if network problem was detected.
+This method is used to [notify](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unsupportedoperationerror) that a requested operation is not supported on the target device.
 
-#### unexpectedInformationReceivedError(_invalidParam_)
-The *unexpectedInformationReceivedError()* is used for [notification](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unexpectedinformationreceivederror) about malformed message.
+The method returns an error message string if a network problems was detected.
 
-It accepts malformed property name.
+### unexpectedInformationReceivedError(*invalidParam*)
 
-The method returns **message string** if network problem was detected.
+This method is used to [notify](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference#unexpectedinformationreceivederror) that a message was malformed.
+
+It accepts malformed property name, and returns an error message string if a network problems was detected.
 
 ## Demo Instructions
 
