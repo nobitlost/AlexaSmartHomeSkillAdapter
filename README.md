@@ -1,6 +1,6 @@
 # AlexaSmartHomeSkill
 
-The library provides a convenient way to implement the
+This library provides a convenient way to implement the
  [Alexa Smart Home Skill Adapter](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-the-smart-home-skill-api) within an agent. It takes care of the JSON verification, data parsing and response formatting.
 
 Supported requests are:
