@@ -1,5 +1,8 @@
 # Demo Notes
 
+**Important Note**:
+The provided example is for illustration purposes. It can be used as a starting point for use-case specific integrations. 
+
 ## 1. Set Up An Electric Imp Model
 
 1. Create a new Model in the [Electric Imp IDE](https://ide.electricimp.com), and copy and paste the device and agent code from [device.nut](device.nut) and [agent.nut](agent.nut) files, respectively.
