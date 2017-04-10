@@ -67,7 +67,7 @@ The *actionCallback* takes the following parameters:
 | *session* | An *AlexaSmartHomeSkill.Session* instance |
 | *applianceId* | The ID of the appliance |
 | *action* | The Smart Home API action |
-| *[parameter]* | Optional request-specific parameter |
+| *[parameter]* | An optional request-specific parameter |
 
 The *actionCallback* function is executed when a Smart Home API request is received. The application is supposed to respond to this request by calling a confirm, response or error method on the *AlexaSmartHomeSkill.Session* object passed into the callback. This response can be made asynchronously.
 
