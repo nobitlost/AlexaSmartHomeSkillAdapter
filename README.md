@@ -18,7 +18,7 @@ Supported requests are:
 The constructor creates the instance of the *AlexaSmartHomeSkill*.
 
 ```squirrel
-#require "AlexaSmartHomeSkill.class.nut:1.0.0"
+#require "AlexaSmartHomeSkill.agent.nut:1.0.0"
 
 mySkill <- AlexaSmartHomeSkill();
 ```
