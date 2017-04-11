@@ -23,7 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 
-#require "AlexaSmartHomeSkill.nut:1.0.0"
+#require "AlexaSmartHomeSkill.agent.nut:1.0.0"
 #require "messagemanager.class.nut:1.0.1"
 
 local smartToasterInfo = {

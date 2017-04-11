@@ -19,7 +19,7 @@ Supported requests are:
 The constructor takes no parameters.
 
 ```squirrel
-#require "AlexaSmartHomeSkill.class.nut:1.0.0"
+#require "AlexaSmartHomeSkill.agent.nut:1.0.0"
 
 mySkill <- AlexaSmartHomeSkill();
 ```
