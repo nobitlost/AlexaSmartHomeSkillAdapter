@@ -148,7 +148,6 @@ const ALEXA_OPT_DESCR_LEN       = 5000;
 const ALEXA_DEF_LEN             = 128;
 const ALEXA_APPID_LEN           = 256;
 
-
 // Error message templates
 // Field not found message
 const NOT_FOUND_ERR             = "Field not found: ";
@@ -160,7 +159,7 @@ const DUP_APP_ERR               = "Duplicating Appliance";
 const WRONG_HEAT_MODE           = "App supplies invalid heat mode";
 
 // Alexa Smart Home service integration class.
-//
+
 class AlexaSmartHomeSkill {
 
     static VERSION = "1.0.0";
