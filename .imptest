@@ -3,7 +3,7 @@
     "devices": [
         "23d8caacc17e10ee" /* rlyeh */
     ],
-    "agentFile": "AlexaSmartHomeSkill.class.nut",
+    "agentFile": "AlexaSmartHomeSkill.agent.nut",
     "deviceFile": false,
     "stopOnFailure": true,
     "timeout": 30,

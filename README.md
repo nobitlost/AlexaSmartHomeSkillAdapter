@@ -10,7 +10,7 @@ Supported requests are:
 - Device control
 - System health check
 
-**To add this library to your project, add** `#require "AlexaSmartHomeSkill.class.nut:1.0.0"` **to the top of your agent code**
+**To add this library to your project, add** `#require "AlexaSmartHomeSkill.agent.nut:1.0.0"` **to the top of your agent code**
 
 ## AlexaSmartHomeSkill Class Usage
 
@@ -19,7 +19,7 @@ Supported requests are:
 The constructor takes no parameters.
 
 ```squirrel
-#require "AlexaSmartHomeSkill.class.nut:1.0.0"
+#require "AlexaSmartHomeSkill.agent.nut:1.0.0"
 
 mySkill <- AlexaSmartHomeSkill();
 ```
