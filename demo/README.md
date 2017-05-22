@@ -1,5 +1,8 @@
 # Demo Notes
 
+**Important Note**:
+The provided example is for illustration purposes. It can be used as a starting point for use-case specific integrations. 
+
 ## 1. Set Up An Electric Imp Model
 
 1. Create a new Model in the [Electric Imp IDE](https://ide.electricimp.com), and copy and paste the device and agent code from [device.nut](device.nut) and [agent.nut](agent.nut) files, respectively.
@@ -19,7 +22,7 @@ To interact with Alexa services the user need a device like the Amazon Echo. The
 
 ### Create a new Skill
 
-The steps below will guide you through the creation of a new Smart Home Skill. These steps will guide you through the AWS Lambda and OAuth configuations for this demo example. For more general instuctions on creating a new Smart Home Skill, you can visit [Amazon's developer website](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/steps-to-create-a-smart-home-skill).
+The steps below will guide you through the creation of a new Smart Home Skill. These steps will guide you through the AWS Lambda and OAuth configurations for this demo example. For more general instructions on creating a new Smart Home Skill, you can visit [Amazon's developer website](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/steps-to-create-a-smart-home-skill).
 
 #### Register as an Amazon Developer and create a Skill
 
@@ -50,7 +53,7 @@ The steps below will guide you through the creation of a new Smart Home Skill. T
     * ‘Description’: Optionally provide a description.
     * ‘Runtime’: Select ‘Node.js 4.3’.
 10. For ‘Lambda function code’, make sure ‘Edit code inline’ is selected.
-11. The Lambda script is a request forwarder and requires the URL of a server that implements Smart Home Skill API. The  AlexaSmartHomeSkill library turns the agent into a server, so we will use the Lambda script to forward requests to the agent URL. Copy and paste the following code into the code editor: [AwsLambda/passthrough.js](../AwsLambda/passthrough.js). Then in the ‘Enviornmental variables’ section, under the code window, enter `EI_AGENT_URL` as the key and your agent URL as the value:
+11. The Lambda script is a request forwarder and requires the URL of a server that implements Smart Home Skill API. The  AlexaSmartHomeSkill library turns the agent into a server, so we will use the Lambda script to forward requests to the agent URL. Copy and paste the following code into the code editor: [AwsLambda/passthrough.js](../AwsLambda/passthrough.js). Then in the ‘Environmental variables’ section, under the code window, enter `EI_AGENT_URL` as the key and your agent URL as the value:
 ![Agent URL](./images/agent-url.png)
 12. The ‘Handler’ should be set to “index.handler”.
 13. For ‘Role’, select a role with “lambda_basic_execution” policy attached. To create a new role, see the
@@ -72,7 +75,7 @@ portal. The ARN should be similar to the following: `ARN - arn:aws:lambda:us-eas
 3. On the ‘Interaction Model’ page, click ‘Next’. The interaction model, which is what a user can say to invoke the Smart Home Skill API, is predefined so does not need to be specified. For details of the smart home voice interaction model,
 see the utterances listed with each reference entry in the [Smart Home Skill API Reference](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/smart-home-skill-api-reference).
 4. On the ‘Configuration’ page, under the ‘Endpoint’ heading, click the checkbox to select the geographical region closest to your target customers, then copy in the ARN number from the Lambda function you created.
-5. To set up account linking authortizaion, you need to create a security profile. The steps below will guide you through this. Click [here](https://developer.amazon.com/blogs/post/Tx3CX1ETRZZ2NPC/Alexa-Account-Linking-5-Steps-to-Seamlessly-Link-Your-Alexa-Skill-with-Login-wit) for more information about Alexa Account Linking.
+5. To set up account linking authorization, you need to create a security profile. The steps below will guide you through this. Click [here](https://developer.amazon.com/blogs/post/Tx3CX1ETRZZ2NPC/Alexa-Account-Linking-5-Steps-to-Seamlessly-Link-Your-Alexa-Skill-with-Login-wit) for more information about Alexa Account Linking.
     1. Copy the redirect URLs from the ‘Skill Configuration’ page.
     2. In a new tab open up [‘Apps & Services’ and then click ‘Login with Amazon’](https://developer.amazon.com/lwa/sp/overview.html).
     3. Click ‘Create a New Security Profile’.
@@ -84,10 +87,10 @@ see the utterances listed with each reference entry in the [Smart Home Skill API
     9. Switch back to the ‘General’ tab and copy the Client ID and the Client Secret.
     9. Navigate back to the ‘Smart Home Skill Configuration’ page, locate the ‘Account Linking’ section and fill it in as follows:
         * ‘Authorization URL’: `https://www.amazon.com/ap/oa`
-        * ‘Client Id’ with the Client ID from the Security Pofile.
+        * ‘Client Id’ with the Client ID from the Security Profile.
         * ‘Scope’: `profile:user_id`.
         * ‘Access Token URI’ with `https://api.amazon.com/auth/o2/token`.
-        * ‘Client Secret’ with the Client Secret from the Security Pofile.
+        * ‘Client Secret’ with the Client Secret from the Security Profile.
 6. Press the ‘Next’ button and ensure the ‘Configuration’ tab is marked as green.
 7. On the ‘Test’ page, set the ‘Show this skill in the Alexa App’ toggle to ‘Yes’.
 
